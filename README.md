@@ -26,21 +26,6 @@ Choose a topic and level to start practicing mock interviews.
 
 ---
 
-## Google Cloud Platform (GCP)
-
-*Coming Soon - GCP interview mocks are currently being developed*
-
-<!--
-| Level | Mock #1 | Mock #2 | Mock #3 | Mock #4 | Mock #5 |
-|---|---|---|---|---|---|
-| **Beginner** | [![Mock 1](images/interviews/gcp/beginner/mock_1.png)](interviews/gcp/beginner/mock_1.md) | [![Mock 2](images/interviews/gcp/beginner/mock_2.png)](interviews/gcp/beginner/mock_2.md) | [![Mock 3](images/interviews/gcp/beginner/mock_3.png)](interviews/gcp/beginner/mock_3.md) | [![Mock 4](images/interviews/gcp/beginner/mock_4.png)](interviews/gcp/beginner/mock_4.md) | [![Mock 5](images/interviews/gcp/beginner/mock_5.png)](interviews/gcp/beginner/mock_5.md) |
-| **Intermediate** | [![Mock 1](images/interviews/gcp/intermediate/mock_1.png)](interviews/gcp/intermediate/mock_1.md) | [![Mock 2](images/interviews/gcp/intermediate/mock_2.png)](interviews/gcp/intermediate/mock_2.md) | [![Mock 3](images/interviews/gcp/intermediate/mock_3.png)](interviews/gcp/intermediate/mock_3.md) | [![Mock 4](images/interviews/gcp/intermediate/mock_4.png)](interviews/gcp/intermediate/mock_4.md) | [![Mock 5](images/interviews/gcp/intermediate/mock_5.png)](interviews/gcp/intermediate/mock_5.md) |
-| **Advanced** | [![Mock 1](images/interviews/gcp/advanced/mock_1.png)](interviews/gcp/advanced/mock_1.md) | [![Mock 2](images/interviews/gcp/advanced/mock_2.png)](interviews/gcp/advanced/mock_2.md) | [![Mock 3](images/interviews/gcp/advanced/mock_3.png)](interviews/gcp/advanced/mock_3.md) | [![Mock 4](images/interviews/gcp/advanced/mock_4.png)](interviews/gcp/advanced/mock_4.md) | [![Mock 5](images/interviews/gcp/advanced/mock_5.png)](interviews/gcp/advanced/mock_5.md) |
-| **Expert** | [![Mock 1](images/interviews/gcp/expert/mock_1.png)](interviews/gcp/expert/mock_1.md) | [![Mock 2](images/interviews/gcp/expert/mock_2.png)](interviews/gcp/expert/mock_2.md) | [![Mock 3](images/interviews/gcp/expert/mock_3.png)](interviews/gcp/expert/mock_3.md) | [![Mock 4](images/interviews/gcp/expert/mock_4.png)](interviews/gcp/expert/mock_4.md) | [![Mock 5](images/interviews/gcp/expert/mock_5.png)](interviews/gcp/expert/mock_5.md) |
--->
-
----
-
 ## 🐧 Linux
 
 | Level | Mock #1 | Mock #2 | Mock #3 | Mock #4 | Mock #5 |
