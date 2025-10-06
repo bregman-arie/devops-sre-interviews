@@ -16,6 +16,7 @@
 6. How do you implement **monitoring and observability** in Kubernetes clusters? [📖 Answer](mock_2_answers.md#6-how-do-you-implement-monitoring-and-observability-in-kubernetes-clusters)
 7. What are **Taints and Tolerations** and how do they affect pod scheduling? [📖 Answer](mock_2_answers.md#7-what-are-taints-and-tolerations-and-how-do-they-affect-pod-scheduling)
 8. How do you troubleshoot **network connectivity issues** between pods and services? [📖 Answer](mock_2_answers.md#8-how-do-you-troubleshoot-network-connectivity-issues-between-pods-and-services)
+9. Why is **NodePort** not sufficient for production environments? When and why should you use **LoadBalancer** services instead? [📖 Answer](mock_2_answers.md#9-why-is-nodeport-not-sufficient-for-production-environments-when-and-why-should-you-use-loadbalancer-services-instead)
 
 ---
 
