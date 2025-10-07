@@ -73,22 +73,3 @@ Design the architecture including:
 6. Testing strategy for disaster recovery
 
 [📖 Answer](mock_1_answers.md#-section-3-problem-solving---answer)
-
----
-
-## 🎯 Additional Topics to Review
-
-- Cloud Spanner for global consistency
-- Traffic Director for service mesh
-- Cloud Endpoints and API Gateway
-- Private Google Access and Private Service Connect
-- Cloud NAT for outbound connectivity  
-- Cloud CDN optimization strategies
-- Shared VPC and network security
-- Cloud KMS for encryption key management
-- Binary Authorization for container security
-- Organization policies and constraints
-
----
-
-[🏠 Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)

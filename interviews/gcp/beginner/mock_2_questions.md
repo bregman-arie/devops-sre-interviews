@@ -49,20 +49,3 @@ Design a simple data processing pipeline for a company that receives daily CSV f
 Which GCP services would you use for each component? Design the data flow and explain your choices.
 
 [📖 Answer](mock_2_answers.md#-section-3-problem-solving---answer)
-
----
-
-## 🎯 Additional Topics to Review
-
-- Cloud Scheduler for automated tasks
-- Cloud Dataflow for stream and batch processing
-- Cloud Endpoints for API management
-- Container Registry for Docker images
-- Cloud Source Repositories for version control
-- Resource labels and tagging strategies
-- GCP quotas and limits
-- Basic troubleshooting in Cloud Console
-
----
-
-[🏠 Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)

@@ -1,252 +1,211 @@
-# Linux Beginner Mock Interview #1 - Answers
+# Linux - Beginner Interview Mock #1 - Answer Key
 
-## Answer 1
-**What is Linux and how does it differ from other operating systems?**
+> **Difficulty:** Beginner  
+> **Duration:** ~30 minutes  
+> **Goal:** Assess your understanding of fundamental Linux concepts, navigation, process & permissions basics, and common troubleshooting commands.
 
-Linux is an open-source, Unix-like operating system kernel developed by Linus Torvalds. Key differences:
+---
+
+## 🧠 Section 1: Core Questions - Answers
+
+### 1. What is Linux and how does it differ from other operating systems?
+
+**Answer:** Linux is an open-source, Unix-like operating system kernel developed by Linus Torvalds. Key differences:
 - **Open Source**: Source code is freely available and can be modified
-- **Multi-user and Multi-tasking**: Supports multiple users simultaneously
-- **Security**: Built-in security features and permission systems
-- **Stability**: Known for reliability and uptime
-- **Cost**: Free to use and distribute
-- **Customization**: Highly customizable with many distributions available
+- **Multi-user & Multi-tasking**: Supports multiple users and processes concurrently
+- **Security Model**: Strong permission model + discretionary access control (DAC)
+- **Stability**: Known for long uptimes and predictable performance
+- **Ecosystem Variety**: Many distributions (Ubuntu, CentOS/Alma, Debian, Arch, Fedora)
+- **Customization & Automation**: Shell scripting and modular components
 
-## Answer 2
-**What is a shell in Linux? Name a few different shell types.**
+### 2. What is a shell in Linux? Name a few different shell types.
 
-A shell is a command-line interface that allows users to interact with the operating system by executing commands. It acts as an intermediary between the user and the kernel.
+**Answer:** A shell is a command interpreter that provides a user interface (CLI) to interact with the OS by executing commands (it mediates between user and kernel via system calls). Common shells:
+- **bash** – Widely used default on many distros
+- **zsh** – Extended features (completion, globbing)
+- **fish** – User-friendly, autosuggestions
+- **dash** – Lightweight POSIX shell (often /bin/sh)
+- **csh / tcsh** – C-like syntax variants
+- **ksh** – Korn shell (scripting features)
 
-Common shell types:
-- **Bash** (Bourne Again Shell) - Most common default shell
-- **Zsh** (Z Shell) - Extended Bourne shell with improvements
-- **Fish** (Friendly Interactive Shell) - User-friendly with syntax highlighting
-- **Csh** (C Shell) - C-like syntax
-- **Tcsh** - Enhanced C shell
-- **Dash** - Lightweight POSIX-compliant shell
+### 3. Explain the Linux file system hierarchy. What are some important directories?
 
-## Answer 3
-**Explain the Linux file system hierarchy. What are some important directories?**
+**Answer:** Based on the FHS (Filesystem Hierarchy Standard):
+- `/` Root of entire filesystem tree
+- `/bin` Essential user binaries (cat, ls, cp)
+- `/sbin` System admin binaries
+- `/etc` System-wide configuration
+- `/lib`, `/lib64` Shared libraries for binaries in /bin & /sbin
+- `/usr` Read-mostly userland programs & libraries
+- `/var` Variable data (logs, spool, caches)
+- `/tmp` Temporary files (often tmpfs, world-writable)
+- `/home` User home directories
+- `/opt` Add-on / 3rd-party packages
+- `/proc` Virtual procfs (kernel & process info)
+- `/sys` sysfs (device & kernel info)
+- `/dev` Device nodes
+- `/boot` Kernel + bootloader files
+- `/run` Volatile runtime state
 
-Linux follows the Filesystem Hierarchy Standard (FHS):
+### 4. What is the difference between `ls -l` and `ls -la`?
 
-- **/** - Root directory, top of the hierarchy
-- **/bin** - Essential user binaries/commands
-- **/boot** - Boot loader files and kernel
-- **/dev** - Device files
-- **/etc** - System configuration files
-- **/home** - User home directories
-- **/lib** - Essential shared libraries
-- **/media** - Removable media mount points
-- **/mnt** - Temporary mount points
-- **/opt** - Optional application packages
-- **/proc** - Virtual filesystem with process information
-- **/root** - Root user's home directory
-- **/sbin** - System administration binaries
-- **/tmp** - Temporary files
-- **/usr** - User programs and data
-- **/var** - Variable data (logs, databases, etc.)
+**Answer:**
+- `ls -l`: Long listing excluding hidden files (those starting with `.`)
+- `ls -la`: Long listing including hidden entries plus `.` (current) and `..` (parent)
 
-## Answer 4
-**What is the difference between `ls -l` and `ls -la`?**
+### 5. How do you create a new directory in Linux?
 
-- **`ls -l`**: Lists files in long format showing detailed information (permissions, ownership, size, date) but excludes hidden files (those starting with a dot)
-- **`ls -la`**: Lists all files including hidden files (the 'a' flag includes files starting with '.') in long format
-
-Example output difference:
+**Answer:** Use `mkdir`:
 ```bash
-$ ls -l
-total 8
--rw-r--r-- 1 user user 1024 Oct  6 10:00 file.txt
-drwxr-xr-x 2 user user 4096 Oct  6 09:30 directory/
-
-$ ls -la
-total 12
-drwxr-xr-x 3 user user 4096 Oct  6 10:00 .
-drwxr-xr-x 5 user user 4096 Oct  6 09:00 ..
--rw-r--r-- 1 user user   20 Oct  6 08:00 .hiddenfile
--rw-r--r-- 1 user user 1024 Oct  6 10:00 file.txt
-drwxr-xr-x 2 user user 4096 Oct  6 09:30 directory/
+mkdir new_dir              # single
+mkdir dir1 dir2 dir3       # multiple
+mkdir -p a/b/c             # create parents as needed
+mkdir -m 750 secure_dir    # set mode at creation
 ```
 
-## Answer 5
-**How do you create a new directory in Linux?**
+### 6. What command would you use to change file permissions in Linux?
 
-Use the `mkdir` command:
-
+**Answer:** `chmod` (symbolic or numeric):
 ```bash
-# Create a single directory
-mkdir new_directory
+chmod u+x script.sh              # add execute for user
+chmod g-w file                   # remove write for group
+chmod u=rw,g=r,o= file.conf      # explicit set
+chmod 755 script.sh              # rwx r-x r-x
+chmod 644 notes.txt              # rw- r-- r--
+```
+Permission bits: r=4, w=2, x=1 (sum per class).
 
-# Create multiple directories
-mkdir dir1 dir2 dir3
+### 7. Explain what a process is in Linux. How can you view running processes?
 
-# Create nested directories (parent directories created if they don't exist)
-mkdir -p path/to/new/directory
-
-# Create directory with specific permissions
-mkdir -m 755 new_directory
+**Answer:** A process is an executing program instance with its own PID, memory space, file descriptors, and scheduling context. Inspection tools:
+```bash
+ps aux            # snapshot of all
+top / htop        # dynamic view
+pstree -p         # hierarchical view
+pgrep <name>      # find PIDs by pattern
+ps -u $USER       # user processes
 ```
 
-## Answer 6
-**What command would you use to change file permissions in Linux?**
+### 8. What is the difference between `cp` and `mv` commands?
 
-Use the `chmod` command:
-
-**Symbolic method:**
+**Answer:**
+- `cp` duplicates files/directories (source remains)
+- `mv` renames or relocates (source removed) – same filesystem = metadata relink; cross-filesystem = copy + delete
 ```bash
-# Add execute permission for owner
-chmod u+x filename
-
-# Remove write permission for group
-chmod g-w filename
-
-# Set read and write for owner, read for group and others
-chmod u=rw,g=r,o=r filename
+cp fileA fileB
+cp -r dirA dirB
+mv oldname newname
+mv file /target/path/
 ```
 
-**Numeric method:**
-```bash
-# Set permissions to 755 (owner: rwx, group: rx, others: rx)
-chmod 755 filename
+### 9. How do you search for files in Linux?
 
-# Set permissions to 644 (owner: rw, group: r, others: r)
-chmod 644 filename
+**Answer:**
+```bash
+find /path -name 'file.txt'      # by name
+find /var/log -type f -size +200M
+locate sshd_config               # DB-based (updatedb)
+which python                     # executable in PATH
+find . -perm 600 -user root
 ```
 
-Permission values:
-- r (read) = 4
-- w (write) = 2  
-- x (execute) = 1
+### 10. What is the purpose of the `grep` command? Give an example.
 
-## Answer 7
-**Explain what a process is in Linux. How can you view running processes?**
-
-A **process** is a running instance of a program. Each process has:
-- Unique Process ID (PID)
-- Parent Process ID (PPID)
-- Memory space
-- File descriptors
-- Environment variables
-
-Commands to view processes:
+**Answer:** `grep` filters input by regex/pattern.
 ```bash
-# Show processes for current user
-ps
-
-# Show all processes with detailed info
-ps aux
-
-# Real-time process viewer
-top
-
-# Enhanced version of top
-htop
-
-# Show process tree
-pstree
-
-# Show processes for specific user
-ps -u username
+grep error /var/log/syslog
+grep -i fail app.log
+ps aux | grep '[n]ginx'          # avoid matching grep
+grep -rn "TODO" src/
 ```
 
-## Answer 8
-**What is the difference between `cp` and `mv` commands?**
+---
 
-- **`cp` (copy)**: Creates a duplicate of the file/directory at the destination, original remains
-- **`mv` (move)**: Moves/renames the file/directory, original is removed from source location
+## ⚙️ Section 2: Scenario - Answer
 
+**Scenario Recap:** Script `backup.sh` fails with `Permission denied` when run, then doesn’t execute via cron.
+
+**Troubleshooting Steps:**
+1. Verify permissions & shebang:
 ```bash
-# Copy file (original remains)
-cp source.txt destination.txt
-cp source.txt /path/to/destination/
+ls -l backup.sh
+head -1 backup.sh               # should be like: #!/bin/bash
+chmod +x backup.sh
+```
+2. Check file format (no CRLF): `file backup.sh` or `sed -n l backup.sh` (if `^M` present: `dos2unix backup.sh`).
+3. Run with explicit shell: `bash backup.sh` to isolate exec bit vs logic errors.
+4. Ensure path correctness; cron runs with minimal `PATH`.
+5. Cron diagnostics:
+   - `crontab -l`
+   - Add logging: `0 2 * * * /path/to/backup.sh >> /var/log/backup.log 2>&1`
+   - Inspect `/var/log/syslog` or `journalctl -u cron` depending on distro.
+6. Add absolute paths inside script (`/usr/bin/tar`, `/bin/date`).
+7. Export required environment or source profile inside script if using variables.
+8. Add `set -euo pipefail` for safer failure handling and explicit exit codes.
 
-# Move file (original is moved/removed from source)
-mv source.txt destination.txt
-mv source.txt /path/to/destination/
+**Common Root Causes:** Missing execute bit, wrong shebang, Windows line endings, relative paths, insufficient permissions on parent directory, relying on interactive-only environment variables.
 
-# Copy directory recursively
-cp -r source_dir destination_dir
+**Fix Summary:** Correct shebang, add execute bit, ensure UNIX line endings, use absolute paths, add logging, verify cron environment.
 
-# Move directory
-mv source_dir destination_dir
+---
+
+## 🧩 Section 3: Problem-Solving - Answer
+
+**Task Recap:** `/var` at 95% usage; identify and remediate safely.
+
+### Priority Command Sequence
+```bash
+df -h /var                               # confirm filesystem & usage
+sudo du -xhd1 /var                       # high-level breakdown
+sudo du -xh /var | sort -h | tail -20    # largest items (human readable)
+sudo find /var/log -type f -size +200M -printf '%s %p\n' | sort -nr | head
+sudo lsof +L1                            # deleted-but-open files still consuming space
 ```
 
-## Answer 9
-**How do you search for files in Linux?**
+### Common Space Hogs
+- Unrotated or verbose logs
+- Package caches (`/var/cache/apt`, yum/dnf caches)
+- Container images & layers (`/var/lib/docker` / `/var/lib/containers`)
+- Core dumps
+- Stale build artifacts or temporary extraction dirs
 
-Several commands can be used:
-
-**`find` command:**
+### Remediation Examples
 ```bash
-# Find files by name
-find /path -name "filename"
-
-# Find files by pattern
-find /path -name "*.txt"
-
-# Find directories
-find /path -type d -name "dirname"
-
-# Find by size
-find /path -size +100M
-
-# Find by permissions
-find /path -perm 644
+sudo journalctl --vacuum-size=500M
+sudo truncate -s 0 /var/log/huge.log
+sudo apt-get clean      # or 'dnf clean all'
+find /var/tmp -type f -mtime +7 -delete
+# Remove old cores after analysis
+dsudo find /var -type f -name 'core.*' -delete
 ```
+If a deleted large file is held open: restart the owning process from `lsof +L1` output.
 
-**`locate` command:**
-```bash
-# Fast search using database
-locate filename
+### Safety Considerations
+- Avoid deleting under `/var/lib` blindly (databases, state directories)
+- Prefer compression over deletion for compliance-critical logs
+- Validate backups before purging archives
+- Keep at least recent rotated logs for incident investigation
 
-# Update database first
-sudo updatedb
-locate filename
-```
+### Preventive Measures
+- Configure `logrotate` with compression & retention limits
+- Set journald caps (`/etc/systemd/journald.conf`: `SystemMaxUse=`)
+- Add disk usage monitoring & alerts (e.g., Prometheus 80% warn / 90% critical)
+- Limit debug logging in production
+- Scheduled cleanup script with retention policy
 
-**`which` command:**
-```bash
-# Find executable in PATH
-which python
-which ls
-```
-
-## Answer 10
-**What is the purpose of the `grep` command? Give an example.**
-
-`grep` (Global Regular Expression Print) searches for patterns in files or input streams.
-
-**Purpose:**
-- Search for specific text patterns
-- Filter output from other commands
-- Use regular expressions for complex searches
-
-**Examples:**
-```bash
-# Search for word in file
-grep "error" logfile.txt
-
-# Case-insensitive search
-grep -i "ERROR" logfile.txt
-
-# Show line numbers
-grep -n "pattern" file.txt
-
-# Recursive search in directories
-grep -r "function" /path/to/code/
-
-# Search multiple files
-grep "pattern" *.txt
-
-# Invert match (show lines that don't match)
-grep -v "exclude" file.txt
-
-# Use with pipe
-ps aux | grep "python"
-cat file.txt | grep "search_term"
-
-# Count matches
-grep -c "pattern" file.txt
+### Sample `logrotate` Snippet
+```conf
+/var/log/app/*.log {
+  daily
+  rotate 14
+  compress
+  missingok
+  notifempty
+  create 640 appuser adm
+  postrotate
+    systemctl reload app.service >/dev/null 2>&1 || true
+  endscript
+}
 ```
 
 ---

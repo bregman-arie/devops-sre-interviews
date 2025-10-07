@@ -208,4 +208,4 @@ Prioritize low-effort/high-impact first.
 **Outcome:** Maintains SLA under burst without over-provisioning; reduces cold start impact via predictive warm capacity; avoids cascading saturation through adaptive concurrency.
 
 ---
-[⬅ Back to Questions](mock_3_questions.md) | [🏠 Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)
+[⬅ Back to Questions](mock_3_questions.md)

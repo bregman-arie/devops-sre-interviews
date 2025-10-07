@@ -316,4 +316,4 @@ rules:
 **Result:** Preemptive capacity reduces cold start impact; multi-tier routing preserves SLA for critical traffic; cost controlled via separation of performance-critical vs opportunistic workloads.
 
 ---
-[⬅ Back to Questions](mock_2_questions.md) | [🏠 Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)
+[⬅ Back to Questions](mock_2_questions.md)

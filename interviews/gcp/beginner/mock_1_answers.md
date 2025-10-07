@@ -274,5 +274,3 @@ Internet → Cloud CDN → Load Balancer → App Engine (API)
 - Regular security scanning
 
 ---
-
-[🏠 Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)

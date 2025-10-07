@@ -47,18 +47,3 @@ Consider:
 - How would you handle traffic from different regions?
 
 [📖 Answer](mock_1_answers.md#-section-3-problem-solving---answer)
-
----
-
-## 🎯 Additional Topics to Review
-
-- GCP pricing models and cost optimization
-- Cloud Load Balancing concepts
-- Google Kubernetes Engine (GKE) basics
-- Cloud Monitoring and Logging
-- Basic networking concepts (subnets, firewall rules)
-- Data backup and disaster recovery in GCP
-
----
-
-[🏠 Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)

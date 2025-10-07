@@ -185,4 +185,4 @@
 - Multi-cloud extension: leverage Anthos (GKE) + Cloud Build multi-target; consistent security via mesh mTLS + OPA.
 
 ---
-[⬅ Back to Questions](mock_1_questions.md) | [🏠 Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)
+[⬅ Back to Questions](mock_1_questions.md)

@@ -536,7 +536,3 @@ CSV Files → Cloud Storage → Cloud Function (Trigger)
 - **Auto-scaling**: Dataflow automatically scales workers based on data volume
 - **Serverless**: Cloud Functions scale to zero when not processing
 - **BigQuery**: Automatically handles query scaling and concurrency
-
----
-
-[🏠 Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)

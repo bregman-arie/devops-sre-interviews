@@ -72,19 +72,3 @@ Design a hybrid adaptive concurrency + predictive autoscaling system on GKE for 
 5. Validation & continuous tuning
 
 [📖 Answer](mock_3_answers.md#-section-4-technical-deep-dive---answer)
-
----
-
-## 📚 Additional Topics to Review
-- Tail latency literature (hedged requests, redundancy, queue theory)
-- Spanner leader placement + split design for latency
-- Bigtable hotspot avoidance & adaptive read patterns
-- Adaptive concurrency control (Envoy / custom token bucket)
-- Advanced Cloud Armor rate policies for prioritization
-- Workload partitioning & traffic classification strategies
-- Load test methodology (baseline vs steady-state vs surge)
-- SLO error budget–driven release gating
-
----
-
-[⬅ Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)

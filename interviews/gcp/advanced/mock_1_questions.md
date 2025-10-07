@@ -77,22 +77,3 @@ Design the architecture with:
 - Performance optimization across global network paths
 
 [📖 Answer](mock_1_answers.md#-section-3-problem-solving---answer)
-
----
-
-## 🎯 Additional Topics to Review
-
-- Cloud Spanner global database design patterns
-- Advanced VPC networking (Shared VPC, cross-organization)
-- Cloud Security Command Center enterprise integration
-- Cloud Asset Inventory and Policy Intelligence
-- Advanced IAM with Conditional IAM and Context-Aware Access
-- Cloud DLP for data protection and classification
-- Advanced monitoring with custom metrics and SLIs/SLOs
-- Cloud Profiler for production performance optimization
-- Advanced BigQuery optimization (partitioning, clustering, materialized views)
-- Multi-cloud and hybrid cloud integration patterns
-
----
-
-[🏠 Back to Main](../../../README.md) | [📋 All GCP Interviews](../../README.md)
