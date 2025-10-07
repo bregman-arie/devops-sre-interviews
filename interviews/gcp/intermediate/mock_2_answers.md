@@ -1,3 +1,263 @@
+# Google Cloud Platform (GCP) - Intermediate Interview Mock #2 - Answer Key
+
+> **Difficulty:** Intermediate  
+> **Duration:** ~45 minutes  
+> **Goal:** Evaluate deeper understanding of secure architectures, data processing design, networking boundaries, cost/performance tuning, and production operations on GCP.
+
+---
+
+## 🧠 Section 1: Core Questions - Answers
+
+### 1. Explain VPC Service Controls: what problem do they solve, key concepts (service perimeter, access levels), and a common pitfall.
+
+**Problem:** Mitigate data exfiltration risk from Google-managed APIs (BigQuery, Cloud Storage, Pub/Sub, Secret Manager, etc.) even if IAM creds are compromised.
+
+**Core Concepts:**
+- **Service Perimeter:** Logical boundary around projects/services; blocks data movement to outside unless explicitly allowed.
+- **Access Levels:** Context-based attributes (IP ranges, device policy) required for perimeter ingress (via Access Context Manager).
+- **Bridging / Dry Run:** Test mode (dry run) before enforcement; perimeter bridges allow limited cross-perimeter access.
+
+**Mechanism:** Adds an additional control layer beyond IAM; denies requests originating from outside perimeter (e.g., stolen credentials used from unknown IP) even if IAM allows.
+
+**Common Pitfall:** Breaking CI/CD or data processing pipelines because service accounts in external project or Cloud Build are not inside the perimeter; forgetting to add necessary egress rules for legitimate integrations (e.g., Vertex AI training outputs).
+
+### 2. Compare Cloud Run vs GKE for a latency-sensitive API needing sidecars, gRPC, and custom networking controls. Include at least three decision dimensions.
+
+| Dimension | Cloud Run | GKE |
+|-----------|-----------|-----|
+| **Sidecars** | Not natively multiple containers per revision (workaround: inject logic into single container) | Full multi-container Pod support (Envoy, Istio, collectors) |
+| **gRPC** | Supported (HTTP/2) but limited low-level tuning | Native with full control (ingress, load balancer types, mTLS meshes) |
+| **Networking** | Basic (VPC connector, egress controls, no full CNI customization) | Advanced (NetworkPolicy, CNI, Pod CIDRs, internal load balancers) |
+| **Autoscaling** | Request concurrency-based; cold starts possible | HPA + custom metrics; more predictable warm capacity |
+| **Latency Tuning** | Limited knobs (min instances, concurrency) | Pod resource requests/limits, node class, bin packing control |
+| **Observability** | Managed logs/metrics tracing; limited DaemonSets | Full ecosystem (Prometheus, OpenTelemetry collector, service mesh) |
+| **Operational Overhead** | Minimal | Higher (patching, upgrades, capacity planning) |
+
+**Conclusion:** For strict latency SLAs + sidecar patterns + custom network policy → GKE. For simpler microservice without complex sidecars → Cloud Run.
+
+### 3. Describe BigQuery partitioning vs clustering: when to use each, how they impact cost, and a misuse example.
+
+**Partitioning:** Physically divides table by date/time (ingestion, column, or integer range). Query engine prunes partitions → reduces bytes scanned & improves performance when filters include partition key.
+
+**Clustering:** Organizes data blocks sorted by up to four clustering columns inside partitions (or whole table). Improves performance and cost by limiting block reads for selective predicates.
+
+**When:**
+- Use partitioning for time-series / append-only event data.
+- Add clustering for frequent filters on high-cardinality columns (user_id, device_id) or for composite ordering (status, region, customer_id).
+
+**Cost Impact:** Less data scanned => lower query cost; partition pruning + clustering block elimination combine.
+
+**Misuse Example:** Partitioning by a high-cardinality string (e.g., user_id) producing thousands of tiny partitions (metadata overhead) while queries still scan broadly; or clustering on a low-cardinality field (e.g., boolean) giving no benefit.
+
+### 4. What are IAM Conditions? Provide two example condition expressions and use cases.
+
+**IAM Conditions:** Attribute-based access control (ABAC) overlay using CEL expressions; refine a binding with context (resource attributes, request time, IP, org tags, etc.).
+
+**Examples:**
+1. **Time-Bound Access:**
+```json
+"condition": {
+  "title": "TempSupportAccess",
+  "expression": "request.time < timestamp('2025-12-31T23:59:59Z')"
+}
+```
+*Use Case:* Grant short-lived support engineer read access without manual revocation.
+
+2. **Restricted IP Range:**
+```json
+"condition": {
+  "title": "CorpNetworkOnly",
+  "expression": "inIpRange(request.ip, '203.0.113.0/24')"
+}
+```
+*Use Case:* Limit sensitive BigQuery dataset access to corporate VPN.
+
+Other patterns: restrict Cloud Storage object access by prefix (`resource.name.startsWith('projects/_/buckets/logs-bkt/objects/eu/')`).
+
+### 5. Compare CMEK vs CSEK (Customer-Managed vs Customer-Supplied Encryption Keys) in GCP: responsibilities, auditability, and when to choose each.
+
+| Aspect | CMEK | CSEK |
+|--------|------|------|
+| Key Hosting | Cloud KMS | Customer holds raw key material |
+| Rotation | Automatic or manual via KMS versions | Customer must rotate & re-encrypt data manually |
+| Audit Logs | Full KMS audit (use, rotate, destroy) | Limited (service sees only encrypted key) |
+| Risk of Loss | Lower (managed redundantly) | Higher (loss = unrecoverable data) |
+| Use Cases | Compliance needing external control, revocation | Rare: extreme regulatory mandates to never expose key material to provider |
+| Ease | Easier to integrate | Higher operational burden |
+
+**Summary:** Prefer CMEK for most regulated workloads; CSEK only if policy forbids provider-managed key storage.
+
+### 6. Explain a typical Dataflow (Apache Beam) pipeline architecture ingesting Pub/Sub events to BigQuery with deduplication and late data handling.
+
+**Flow:** Pub/Sub → Dataflow Streaming Job → BigQuery (raw & aggregated tables).
+
+**Key Elements:**
+- **Windowing:** Fixed or sliding windows (e.g., 1m) with *event time* semantics.
+- **Watermarks:** Estimate event-time completeness; triggers pane emission.
+- **Allowed Lateness:** Additional grace period for late events (e.g., 10m) before final pane closes.
+- **Deduplication:** Use `PubsubMessage` attributes (messageId) or domain key; maintain state (Set) + TTL to discard duplicates.
+- **Dead-Letter:** Side output of parse/validation failures → Pub/Sub `dead-letter` topic + Cloud Storage.
+- **Backpressure & Autoscaling:** Streaming Engine + Dataflow autoscaling workers.
+- **Schema Evolution:** Use BigQuery schema-compatible field additions.
+
+**Pseudo Beam (Python):**
+```python
+| pubsub.ReadFromPubSub(topic=...) \
+  | beam.Map(parse_json) \
+  | beam.WithKeys(lambda e: e['event_id']) \
+  | beam.Distinct() \
+  | beam.WindowInto(FixedWindows(60), allowed_lateness=minutes(10), trigger=AfterWatermark()) \
+  | beam.Map(to_bq_row) \
+  | beam.io.WriteToBigQuery(table=..., method='STREAMING_INSERTS')
+```
+
+### 7. What is Private Service Connect (PSC)? Contrast it with VPC Peering and Serverless VPC Access.
+
+**Private Service Connect:** Provides private (RFC1918) endpoints to access Google APIs, partner services, or publish your own service privately to consumers without exposing producer network details. Decouples producer & consumer networks (no shared routing domain).
+
+| Feature | PSC | VPC Peering | Serverless VPC Access |
+|---------|-----|------------|-----------------------|
+| Purpose | Private endpoint to services/APIs | Full mesh network connectivity | Allow serverless (Cloud Run/Functions/App Engine) to reach VPC resources |
+| Route Sharing | No (service-level) | Yes (full subnet reachability) | One-way from serverless into VPC |
+| Transitivity | N/A (endpoint) | No | N/A |
+| Use Case | Expose service to customers securely | Multi-project internal network | Private DB access for serverless |
+| Isolation | Strong (endpoint abstraction) | Lower (broad trust) | Limited to egress path |
+
+**Benefit:** Fine-grained exposure without broad network trust required by peering.
+
+### 8. Outline a secure Cloud Build pipeline for container images, covering provenance, vulnerability scanning, least privilege, and promotion strategy.
+
+**Pipeline Stages:**
+1. **Source Fetch:** Trigger on Git push / tag.
+2. **Build:** Cloud Build uses minimal builder image; build with `docker build` or `kaniko`.
+3. **Vulnerability Scan:** Artifact Registry scanning enabled; block if High/Critical unresolved.
+4. **Provenance / SLSA:** Enable build provenance (attestations) and store in Artifact Registry; optionally Binary Authorization policy requires attestation.
+5. **Tests:** Unit + integration; ephemeral services with Cloud Build machine type.
+6. **Signing:** Use Cloud KMS key or Sigstore (cosign) to sign image digest.
+7. **Policy Gate:** Binary Authorization enforces signature + no critical vulns.
+8. **Promotion:** Tag immutable digest to `:staging` → deploy; after soak + automated tests pass, retag digest to `:prod` (no rebuild).
+
+**Least Privilege:**
+- Dedicated Cloud Build service account with only `roles/artifactregistry.writer`, `roles/cloudkms.signerVerifier`, `roles/run.admin` (no broad editor).
+- Separate deploy SA per environment.
+
+**Example cloudbuild.yaml (excerpt):**
+```yaml
+steps:
+- name: gcr.io/cloud-builders/docker
+  args: ['build','-t','$IMAGE_DIGEST','--label','git_sha=$COMMIT_SHA','.']
+- name: gcr.io/cloud-builders/gcloud
+  args: ['artifacts','docker','tags','add','$IMAGE_DIGEST','$REPO_URI:$SHORT_SHA']
+- name: gcr.io/cloud-builders/gcloud
+  args: ['artifacts','docker','vuln','list','$IMAGE_DIGEST']
+- name: gcr.io/cloud-builders/gcloud
+  args: ['beta','container','binauthz','attestations','create','--artifact-url','$IMAGE_DIGEST','--attestor','secure-attestor']
+images: ['$IMAGE_DIGEST']
+``` 
+
+**Promotion:** Retag digest rather than rebuilding → ensures reproducibility & traceability.
+
+---
+
+## ⚙️ Section 2: Scenario - Answer
+
+**High-Level Architecture:**
+
+```
+Devices → (TLS MQTT/HTTPS) → Global Load Balancer / IoT Core* → Pub/Sub (raw)
+                                            (IoT Core deprecated -> custom ingest on Cloud Run/GKE)
+                     ↓                                   ↓
+              Pub/Sub (raw backlog)           Dead-letter (invalid)
+                     ↓
+              Dataflow Streaming Pipeline (window, dedupe, enrich)
+                     ↓                ↓                     ↓
+           BigQuery (recent hot)   Cloud Storage (raw/partitioned)   Feature Extract (BQ → GCS parquet)
+                     ↓
+         BigQuery (hourly rollup aggregate table)
+```
+
+**Components:**
+- **Ingestion:** Global External HTTP(S) Load Balancer → regional Cloud Run services (autoscale) handling device auth & protocol translation (or managed IoT gateway replacement). Pub/Sub for durable fan-in with ordered keys per device (ordering key = device_id for intra-device ordering).
+- **Buffering & Spikes:** Pub/Sub scales horizontally; backlog observable via metrics; flow control in Dataflow.
+- **Processing:** Dataflow streaming job: event-time windows (5m + allowed lateness 10m) produce hourly rollup table via BigQuery MERGE; deduplicate using device_id+timestamp hash; late events update rollups.
+- **Storage Tiers:**
+  - Hot analytics (30 days): BigQuery partitioned + clustered (partition by ingestion_date, cluster by device_id).
+  - Cold raw (1 year): Cloud Storage bucket (partitioned by dt=YYYY-MM-DD/region=us|eu). Lifecycle: Nearline @ 30d, Coldline @ 180d.
+- **Replay (48h):** Retain Pub/Sub messages for 48h (subscription retention) OR store raw Cloud Storage objects; to replay, launch temporary Dataflow job reading last 48h GCS paths.
+- **ML Feature Export:** Scheduled (Cloud Composer / Cloud Scheduler + Cloud Run Job) daily query last 30 days BigQuery → export parquet to GCS `ml/features/`.
+- **Regional Access Control:** Separate projects per region or BigQuery row-level security (RLS) & column-level security to mask PII for non-region teams; VPC Service Controls perimeter around analytics & storage; IAM Conditions restricting IP/location.
+- **Exactly-Once Semantics:** Idempotent writes using BigQuery MERGE on composite key (device_id, event_ts); Dataflow dedupe state TTL > max lateness.
+- **Monitoring:** Cloud Monitoring dashboards: Pub/Sub backlog, Dataflow watermark lag, BigQuery slot usage; alert if lag > threshold.
+- **Cost Optimizations:** Slot reservations only for baseline; autoscale streaming; compressed GCS (gzip/parquet); prune columns; partition & cluster; lifecycle tiers for cold storage.
+
+**Security:**
+- Mutual TLS or signed tokens for device auth; Secret Manager for service credentials; CMEK for BigQuery & GCS if compliance; audit logs exported centrally.
+
+### Why This Meets Requirements
+- Handles spikes (Pub/Sub + autoscale) & sub-second ingest path.
+- Replay via retained raw storage + ephemeral reprocessing.
+- Exactly-once via dedupe + MERGE.
+- Regional data access control via RLS + VPC SC.
+- Cost controlled through tiered storage & partitioning.
+
+---
+
+## 🧩 Section 3: Problem-Solving - Answer
+
+**Goal:** Strong tenant isolation, scalable batch compute, minimal cluster overhead.
+
+### Recommended Design
+
+**Project Structure:**
+- `tenant-<ID>-data` projects (per-tenant) containing storage (GCS buckets), BigQuery datasets, and KMS key ring (CMEK per tenant).
+- Shared `platform-control` project: identity (Cloud IAM groups), Cloud Build pipelines, central monitoring, Artifact Registry, service catalog.
+- Optional `central-logs` project: consolidated audit & access logs.
+
+**Encryption:**
+- Each tenant project: KMS key (CMEK) for BigQuery & GCS; disabling a key = immediate revocation of access (data unreadable) fulfilling revocation requirement.
+
+**Data Processing Jobs:**
+- Use Cloud Run Jobs or Dataflow for batch; triggered via Cloud Scheduler in control project calling tenant-specific Cloud Run Job (invoker IAM) through Private Service Connect if needed.
+- For heavier ETL, per-tenant Dataflow jobs with service account limited to tenant resources only.
+
+**Identity & IAM:**
+- Per-tenant service accounts: `tenant-<ID>-sa` with least privilege (e.g., `roles/bigquery.dataEditor` on that tenant dataset only).
+- Control plane SA with `roles/run.invoker` across tenants; no direct data access.
+- Use IAM Conditions to restrict support staff access by request time & IP.
+
+**Networking:**
+- Shared VPC exporting subnets to tenant projects (optionally) or isolate completely; if shared, firewall rules with tight tags; VPC SC perimeter containing all tenant projects to reduce exfiltration vector.
+
+**Observability:**
+- Aggregated log sinks (per tenant) exporting only metrics & audit logs to `central-logs` BigQuery for platform analytics; exclude raw PII to minimize exposure.
+
+**Promotion / Deployment:**
+- Single artifact built once (Cloud Build) → tagged digest deployed per tenant with environment-specific config (env vars/Secret Manager references).
+
+**Cost Tracking:**
+- Billing export uses project boundary; optionally apply consistent labels (`tenant=<ID>`, `component=etl|api`).
+
+**Revocation Flow:**
+1. Disable tenant KMS key (immediate cryptographic lock). 
+2. Revoke service account access.
+3. Archive project (optional) or schedule deletion.
+
+### Trade-offs vs Single Project + Labels Only
+| Aspect | Multi-Project | Single Project + Labels |
+|--------|---------------|--------------------------|
+| Isolation | Strong (IAM, quotas, blast radius) | Weaker (logical only) |
+| Compromise Impact | Limited to tenant project | Wider lateral movement risk |
+| Key Management | Per-tenant CMEK natural | Complex key scoping logic |
+| Operational Overhead | Higher (more projects) | Lower admin overhead |
+| Billing Clarity | Native per project | Requires label hygiene |
+| Governance Policies | Fine-grained (org/folder inheritance) | Harder to scope exceptions |
+
+**Why Not GKE Multi-namespace Only?** Namespaces share cluster control plane risk; noisy neighbor resource contention; weaker encryption separation.
+
+### Orchestration Simplicity
+Cloud Run Jobs avoid cluster scheduling complexity; Dataflow only for heavy data transformations.
+
+---
 ````markdown
 # Google Cloud Platform (GCP) - Intermediate Interview Mock #2 - Answer Key
 
