@@ -2,6 +2,172 @@
 
 > **Difficulty:** Advanced  
 > **Duration:** ~60 minutes  
+> **Goal:** Probe expertise in resilient, secure, multi-region, compliance-aware, performance-optimized architectures on GCP.
+
+---
+
+## 🧠 Section 1: Core Questions - Answers
+
+### 1. Design a multi-region active/active architecture using Cloud Spanner + global load balancing for a mission-critical SaaS API. How do you handle session affinity and schema migrations?
+
+**Architecture:**
+```
+Clients → Global HTTPS LB (CDN, Cloud Armor) → Regional Backends (Cloud Run/GKE) → Cloud Spanner (multi-region config) → Pub/Sub (events)
+```
+**Session Affinity:** Prefer stateless JWT tokens; if sticky needed (short-lived), use LB cookie-based affinity; never store mutable session state locally—store in Spanner / Memorystore global cache pattern (or per-region + token claims).
+
+**Schema Migrations:** Use forward-compatible additive changes (add columns NULLABLE). Two-phase: (1) deploy code tolerant to both schemas; (2) apply DDL; (3) remove legacy usage later. Use `CHANGE STREAMS` to validate new schema population. Avoid backfill blocking traffic (chunked writes). Maintenance windows coordinated via feature flags. Spanner online schema updates are non-blocking (except some operations like dropping primary key columns).
+
+### 2. Explain how to combine Cloud KMS, Confidential Computing (Confidential VMs), and VPC Service Controls to meet stringent data confidentiality requirements.
+
+**Stack Layers:**
+1. **KMS CMEK:** Central key rings per region; services encrypt data at rest using keys with IAM least privilege, Cloud HSM or EKM if regulator requires external custody.  
+2. **Confidential VMs:** AMD SEV or Intel TDX encryption-in-use; workloads process sensitive data in encrypted memory to mitigate hypervisor / physical attacks.  
+3. **VPC Service Controls:** Define perimeters around BigQuery, Storage, Secret Manager to prevent data exfiltration to unmanaged projects/accounts.  
+4. **Access Context Manager:** Access Levels restrict access source IP / device posture.  
+5. **Binary Authorization:** Ensures only attested images reach confidential compute nodes.  
+6. **Audit + Access Transparency:** Track every key use and data access; anomaly detection on unusual decrypt frequency.  
+**Result:** Data protected at rest (CMEK), in transit (TLS/mTLS), and in use (Confidential VMs) with exfiltration barricades (VPC SC) and hardened supply chain.  
+
+### 3. Outline a zero-downtime blue/green migration from Cloud SQL to Cloud Spanner for a high-write OLTP workload (include dual-write / backfill strategy).
+
+1. **Model Design:** Map relational schema to Spanner (interleaved tables, split by customer_id).  
+2. **Initial Backfill:** Dataflow batch job reads Cloud SQL snapshot → writes to Spanner; mark high-water timestamp (HWT).  
+3. **Change Capture:** Logical replication (pgoutput) → Dataflow CDC pipeline streaming new mutations > HWT into Spanner (ordered by commit time).  
+4. **Dual-Write Phase:** Update application to write to both Cloud SQL (primary) & Spanner (idempotent upserts). Monitor divergence with periodic checksum queries or change streams.  
+5. **Read Shadowing:** Portion of read traffic (e.g., 5%) served from Spanner & compared for parity (non-customer impacting).  
+6. **Consistency Gate:** When replication lag ~0 & parity success rate ≥99.99%, flip read traffic gradually to Spanner.  
+7. **Write Cutover:** Freeze writes briefly (few seconds), ensure final WAL applied, then switch primary writes to Spanner. Keep dual-write for safety window (15–30m).  
+8. **Rollback Plan:** Maintain replication path to Cloud SQL (reverse pipeline optional) until confidence threshold met; if issues, revert read/write flag.  
+
+### 4. Compare Pub/Sub vs Kafka-on-GKE vs Cloud Tasks vs Dataflow for orchestrating high-throughput event-driven microservices. Provide a decision matrix.
+
+| Capability | Pub/Sub | Kafka on GKE | Cloud Tasks | Dataflow |
+|-----------|---------|--------------|-------------|---------|
+| Throughput | Very high (auto-scale) | Very high (manual ops) | Medium (task semantics) | N/A (processing, not broker) |
+| Ordering | Per ordering key | Partition-based | FIFO per queue (limited) | Window/event-time semantics |
+| Exactly-Once | At-least-once (app dedupe) | At-least-once / EOS with txn | Task-level retries | Provides processing semantics (dedupe in pipeline) |
+| Latency | Low | Low (tuned) | Moderate (dispatch scheduling) | Depends on pipeline |
+| Ops Overhead | Minimal | High (zookeeper-less still ops) | Minimal | Moderate (pipeline mgmt) |
+| Use Case | Fan-out, streaming ingestion | Legacy Kafka ecosystem | Controlled HTTP tasks, rate limit | Transform/enrich/ETL |
+| DLQ | Yes (subscription) | Yes | Built-in (retry limit) | Side outputs |
+| Backpressure | Implicit via subscriber ack | Consumer lag metrics | Queue length | Autoscaling workers |
+
+### 5. How would you implement a secure, policy-enforced software supply chain on GCP (source → build → attest → deploy → runtime)?
+
+**Stages:**
+1. **Source:** Cloud Source Repos / GitHub with branch protection, code owners, secret scanning.  
+2. **Build:** Cloud Build build steps with ephemeral service account; SBOM generation (Syft); vulnerability scanning (Artifact Registry).  
+3. **Attestation:** Build provenance (SLSA level) captured; cosign/KMS sign digest; store attestations (Binary Authorization attestors).  
+4. **Policy Gate:** Binary Authorization blocks deploy unless signature + no critical vulns + SBOM present.  
+5. **Deploy:** Cloud Deploy or custom pipeline applying progressive rollout; IAM separated deploy vs build roles.  
+6. **Runtime:** Workload Identity, VPC SC, Cloud Armor, continuous vulnerability scanning (runtime), drift detection (config sync).  
+7. **Monitoring:** Audit logs for deploy events; anomaly detection for unapproved images.  
+
+### 6. Describe advanced cost optimization strategies for BigQuery at petabyte scale (slots, workload management, dynamic reservations, multi-tenant fairness).
+
+- **Slot Reservations:** Carve baseline (steady ingestion) vs burst (ad-hoc) with separate reservations & assignments.  
+- **Autoscaling Reservations:** Use flex slots for unpredictable spikes; release after workload completes.  
+- **Workload Prioritization:** Resource groups (ingest > production dashboards > exploratory) with reservation assignments; deny runaway exploratory queries early.  
+- **Result Caching & BI Engine:** Leverage BI Engine for sub-second dashboards; reduce repeated slot consumption.  
+- **Column Pruning & Partition/Cluster:** Strict schema governance; tooling to reject SELECT *.  
+- **Materialized Incremental Views:** Pre-aggregate high-cost metrics; orchestrate refresh windows off-peak.  
+- **Chargeback:** Tag queries via session labels (`job.labels.team=...`) for accountability.  
+- **Adaptive Optimization:** Monitor slot utilization; reallocate idle slots automatically via Cloud Functions adjusting assignments.  
+
+### 7. How do you architect a privacy-preserving analytics platform using differential privacy, tokenization, and column/row-level policies in BigQuery?
+
+**Architecture Components:**
+- **Tokenization Service:** Cloud Run service + KMS envelope encryption; reversible mapping stored in Spanner (split shards).  
+- **Sensitive Zones:** Raw PII dataset (restricted); processed pseudonymized dataset; public aggregated dataset.  
+- **Differential Privacy Layer:** Custom query proxy or Dataflow job applying Laplace noise for statistical exports; enforce epsilon budget per analyst/team.  
+- **Column-Level Security:** Mask or deny fields (email, phone) except to privileged roles.  
+- **Row-Level Security:** Tenant or region predicate enforcement (e.g., `region = 'EU'`).  
+- **Access Workflow:** Just-in-time approval (Cloud Functions + Access Approval) for temporary elevated access.  
+- **Monitoring:** Audit logs + anomaly detection on unusually large result sets.  
+
+### 8. Design a proactive anomaly detection & self-healing platform using Cloud Logging, Cloud Monitoring, Cloud Functions, and Vertex AI anomaly models.
+
+**Flow:**
+1. Log & metric export → BigQuery / Pub/Sub.  
+2. Dataflow streaming job aggregates features (latency percentiles, error rates, saturation) → writes feature vectors to Vertex AI Feature Store.  
+3. Vertex AI anomaly detection model (autoencoder / isolation forest) periodically scores new windows.  
+4. High anomaly score → Pub/Sub → Cloud Function executes runbook (scale, restart, traffic shift).  
+5. Cloud Workflows handles multi-step remediation (e.g., failover DB, invalidate cache).  
+6. Feedback loop: Post-incident tagging to retrain model weekly.  
+7. Governance: All automated actions logged + require manual approval for destructive steps (via Cloud Tasks pending queue).  
+
+---
+
+## ⚙️ Section 2: Scenario - Answer
+
+**Global Analytics & AI Platform Design**
+
+```
+Region A (EU)          Region B (US)           Region C (APAC)
+ Ingest → Raw GCS      Ingest → Raw GCS        Ingest → Raw GCS
+  |        |            |        |              |        |
+  |   Dataflow (PII tag)|   Dataflow           |   Dataflow
+  v        v            v        v              v        v
+  BQ Raw (regional)   BQ Raw (regional)      BQ Raw (regional)
+           \              |                 /
+    Anonymize/Tokenize (per region)
+              \           |          /
+        BQ Pseudonym (regional)
+                 | hourly DP aggregates (noise)
+                 v
+          BQ Global Features (non-PII)
+                 |→ Vertex AI (global models)
+                 |→ Looker Dashboards
+```
+
+**Key Elements:**
+- **Ingestion:** Regional Pub/Sub topics (edge collectors) → Dataflow parse/enrich; tag PII classification.  
+- **Storage Tiers:** Raw (immutable) per-region BigQuery datasets (policy tags); pseudonymized regional sets; global aggregated non-PII dataset (strict field allowlist).  
+- **Privacy Boundary:** Only differential-privacy sanitized aggregates cross regions (Access Approval enforced for exceptions).  
+- **Feature Exchange:** Dataflow hourly job produces anonymized feature vectors to global dataset; Vertex Feature Store for model consumption.  
+- **Governance:** Data Catalog policy tags + lineage (Dataplex); Access Context Manager + VPC SC perimeter groups; immutable audit exports to Cloud Storage WORM bucket (Object Lock).  
+- **Workload Isolation:** Separate BigQuery reservations: ingestion, interactive BI, ML training, ad-hoc sandbox. Query governor rejects large ad-hoc queries during peak.  
+- **Cost Controls:** Slot autoscale + flex slots, materialized views for top dashboards, TTL on intermediate staging tables, usage labels, anomaly detection job.  
+- **Security:** CMEK for all BQ/GCS, per-region KMS; tokenization service with HSM-protected key; Cloud DLP scans new raw loads; Access Transparency review.  
+- **Latency (<10s fraud signals):** Streaming pipeline publishes risk signals (non-PII) to global Pub/Sub topic via restricted bridging project; subscribers update fraud model features in-memory (Memorystore / Redis Enterprise).  
+
+**Trade-offs:**
+- Complexity vs compliance: Additional anonymization pipelines increase dev overhead but enable global ML legally.  
+- Cost vs performance: Slot segmentation prevents noisy neighbor but requires governance.  
+- Latency vs privacy: Only minimal feature set allowed cross-region; full raw withheld to meet sovereignty.  
+
+---
+
+## 🧩 Section 3: Problem-Solving - Answer
+
+**Global Secrets Delivery Architecture**
+
+```
+Secret Authors → KMS (Root) → Secret Manager (versioned) → Pub/Sub (version events) → Cloud Run Distributor
+       |                                        |                      |
+   (EKM/HSM)                          Org Policy / VPC SC       Vertex AI anomaly scoring
+
+Workloads (Cloud Run / GKE / Dataflow) → Sidecar / Init Container → Fetch JIT (STS) → Decrypt (Envelope) → In-memory cache (TTL <5m)
+```
+
+**Components:**
+- **Key Hierarchy:** Root key (HSM/EKM) → intermediate data encryption keys (rotated frequently) → envelope encrypt secret payloads.  
+- **Publishing:** New secret version creation triggers Pub/Sub event; distributor service evaluates rollout policy (canary subset of services) before global exposure.  
+- **Just-in-Time Retrieval:** Workload identity (GSA + Workload Identity / IAM) exchanges for short-lived token; fetch specific secret version; decrypt locally (never write to disk).  
+- **Version Pinning:** Deployment manifest stores required version; auto-advance only after health checks pass (success metric, error rate unchanged).  
+- **Revocation:** Mark compromised version disabled; purge in-memory caches by forcing 401 on sidecar which refetches allowed version; optionally rotate intermediate data key.  
+- **Anomaly Detection:** Stream access logs to BigQuery; feature extraction (frequency, entropy of access pattern) → Vertex AI model flags spikes (e.g., sudden wide secret access).  
+- **Isolation:** Per-service KMS key / keyring to minimize blast radius; VPC SC perimeter shields Secret Manager API; Access Levels restrict retrieval source contexts.  
+- **Operational Process:** Weekly automated rotation; emergency rotation runbook (invalidate version, create new, force refresh).  
+
+**Benefits:** Sub-5 minute rotation (event-driven invalidation), minimized leakage window (short TTL), strong auditing, per-service cryptographic segmentation.  
+
+---
+# Google Cloud Platform (GCP) - Advanced Interview Mock #2 - Answer Key
+
+> **Difficulty:** Advanced  
+> **Duration:** ~60 minutes  
 > **Goal:** Provide deep, implementation-oriented answers for resilience, failure containment, performance, compliance, and operational excellence on GCP.
 
 ---

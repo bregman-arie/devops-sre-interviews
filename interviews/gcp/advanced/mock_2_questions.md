@@ -2,6 +2,57 @@
 
 > **Difficulty:** Advanced  
 > **Duration:** ~60 minutes  
+> **Goal:** Probe expertise in resilient, secure, multi-region, compliance-aware, performance-optimized architectures on GCP.
+
+---
+
+## 🧠 Section 1: Core Questions
+
+1. Design a multi-region active/active architecture using Cloud Spanner + global load balancing for a mission-critical SaaS API. How do you handle session affinity and schema migrations? [📖 Answer](mock_2_answers.md#1-design-a-multi-region-activeactive-architecture-using-cloud-spanner--global-load-balancing-for-a-mission-critical-saas-api-how-do-you-handle-session-affinity-and-schema-migrations)
+2. Explain how to combine Cloud KMS, Confidential Computing (Confidential VMs), and VPC Service Controls to meet stringent data confidentiality requirements. [📖 Answer](mock_2_answers.md#2-explain-how-to-combine-cloud-kms-confidential-computing-confidential-vms-and-vpc-service-controls-to-meet-stringent-data-confidentiality-requirements)
+3. Outline a zero-downtime blue/green migration from Cloud SQL to Cloud Spanner for a high-write OLTP workload (include dual-write / backfill strategy). [📖 Answer](mock_2_answers.md#3-outline-a-zero-downtime-bluegreen-migration-from-cloud-sql-to-cloud-spanner-for-a-high-write-oltp-workload-include-dual-write--backfill-strategy)
+4. Compare Pub/Sub vs Kafka-on-GKE vs Cloud Tasks vs Dataflow for orchestrating high-throughput event-driven microservices. Provide a decision matrix. [📖 Answer](mock_2_answers.md#4-compare-pubsub-vs-kafka-on-gke-vs-cloud-tasks-vs-dataflow-for-orchestrating-high-throughput-event-driven-microservices-provide-a-decision-matrix)
+5. How would you implement a secure, policy-enforced software supply chain on GCP (source → build → attest → deploy → runtime)? [📖 Answer](mock_2_answers.md#5-how-would-you-implement-a-secure-policy-enforced-software-supply-chain-on-gcp-source--build--attest--deploy--runtime)
+6. Describe advanced cost optimization strategies for BigQuery at petabyte scale (slots, workload management, dynamic reservations, multi-tenant fairness). [📖 Answer](mock_2_answers.md#6-describe-advanced-cost-optimization-strategies-for-bigquery-at-petabyte-scale-slots-workload-management-dynamic-reservations-multi-tenant-fairness)
+7. How do you architect a privacy-preserving analytics platform using differential privacy, tokenization, and column/row-level policies in BigQuery? [📖 Answer](mock_2_answers.md#7-how-do-you-architect-a-privacy-preserving-analytics-platform-using-differential-privacy-tokenization-and-columnrow-level-policies-in-bigquery)
+8. Design a proactive anomaly detection & self-healing platform using Cloud Logging, Cloud Monitoring, Cloud Functions, and Vertex AI anomaly models. [📖 Answer](mock_2_answers.md#8-design-a-proactive-anomaly-detection--self-healing-platform-using-cloud-logging-cloud-monitoring-cloud-functions-and-vertex-ai-anomaly-models)
+
+---
+
+## ⚙️ Section 2: Scenario
+
+**Scenario:**  
+Your organization is consolidating five regional data platforms into a unified global analytics and AI environment on GCP. Constraints & goals:
+- Data sovereignty: certain PII fields must never leave originating region.  
+- Global ML models require aggregated anonymized features (hourly).  
+- Real-time fraud signals (<10s delay) must be shared cross-region.  
+- Mixed workloads: interactive BI, ad-hoc exploration, ML training, streaming enrichment.  
+- Strict governance: lineage, reproducibility, policy-based access, immutable audit.  
+- Cost ceiling: must reduce current spend 25% while increasing capability.  
+
+Design the end‑to‑end platform: ingestion, storage tiers, privacy boundary enforcement, cross-region feature exchange, governance/lineage tooling, workload isolation, and cost controls. Argue trade-offs.
+
+[📖 Answer](mock_2_answers.md#️-section-2-scenario---answer)
+
+---
+
+## 🧩 Section 3: Problem-Solving
+
+**Task:**  
+Architect a resilient global secrets delivery mechanism for 300+ microservices (mix of Cloud Run, GKE, batch Dataflow) requiring just‑in‑time decryption, rotation < 5 minutes, and blast-radius isolation. Handle:
+- Multi-region replication & locality awareness  
+- Version pinning and staged rollout  
+- Immediate revocation & leak response  
+- Audit analytics & anomaly detection  
+- Support for both envelope encryption and hardware-backed keys  
+
+Provide components, data flows, and operational processes.
+
+[📖 Answer](mock_2_answers.md#-section-3-problem-solving---answer)
+# Google Cloud Platform (GCP) - Advanced Interview Mock #2
+
+> **Difficulty:** Advanced  
+> **Duration:** ~60 minutes  
 > **Goal:** Assess your expertise in designing resilient, highly available systems on GCP with advanced architectural patterns and enterprise-grade reliability requirements.
 
 ---
