@@ -12,6 +12,8 @@
 
 Provide actual code examples for the module structure and usage.
 
+[📖 Answer](mock_1_answers.md#question-1-multi-environment-infrastructure-with-custom-modules)
+
 ---
 
 ## Question 2: State Management and Team Collaboration Anti-Patterns
@@ -25,6 +27,8 @@ Provide actual code examples for the module structure and usage.
 - Recovery procedures for state corruption scenarios
 
 Show the actual backend configurations and pipeline code.
+
+[📖 Answer](mock_1_answers.md#question-2-state-management-and-team-collaboration-anti-patterns)
 
 ---
 
@@ -40,6 +44,8 @@ Show the actual backend configurations and pipeline code.
 
 Provide working Terraform code with proper dependency management.
 
+[📖 Answer](mock_1_answers.md#question-3-complex-resource-dependencies-and-data-flow)
+
 ---
 
 ## Question 4: Dynamic Infrastructure Based on External Data
@@ -53,6 +59,8 @@ Provide working Terraform code with proper dependency management.
 - Implements proper validation and error handling
 
 Show actual code for data fetching, processing, and resource creation.
+
+[📖 Answer](mock_1_answers.md#question-4-dynamic-infrastructure-based-on-external-data)
 
 ---
 
@@ -68,6 +76,8 @@ Show actual code for data fetching, processing, and resource creation.
 
 Provide code examples and integration patterns.
 
+[📖 Answer](mock_1_answers.md#question-5-custom-provider-development-and-integration)
+
 ---
 
 ## Question 6: Performance Optimization for Large-Scale Infrastructure
@@ -81,6 +91,8 @@ Provide code examples and integration patterns.
 - Design a strategy for incremental deployments
 
 Show specific configuration changes and architectural decisions.
+
+[📖 Answer](mock_1_answers.md#question-6-performance-optimization-for-large-scale-infrastructure)
 
 ---
 
@@ -96,6 +108,8 @@ Show specific configuration changes and architectural decisions.
 
 Provide actual automation scripts and Terraform configurations.
 
+[📖 Answer](mock_1_answers.md#question-7-disaster-recovery-and-infrastructure-automation)
+
 ---
 
 ## Question 8: Security Compliance and Policy Enforcement
@@ -109,6 +123,8 @@ Provide actual automation scripts and Terraform configurations.
 - Show how to handle security violations and rollbacks
 
 Provide working policy code and enforcement mechanisms.
+
+[📖 Answer](mock_1_answers.md#question-8-security-compliance-and-policy-enforcement)
 
 ---
 
@@ -124,6 +140,8 @@ Provide working policy code and enforcement mechanisms.
 
 Show actual test code and CI/CD integration.
 
+[📖 Answer](mock_1_answers.md#question-9-advanced-testing-and-validation-strategies)
+
 ---
 
 ## Question 10: Real-World Debugging and Incident Response
@@ -138,7 +156,11 @@ Show actual test code and CI/CD integration.
 
 Provide actual commands, scripts, and procedures you would follow.
 
+[📖 Answer](mock_1_answers.md#question-10-real-world-debugging-and-incident-response)
+
 ---
+
+**Next:** [View Answers](mock_1_answers.md)
 
 **Time Limit:** 90 minutes  
 **Level:** Advanced  

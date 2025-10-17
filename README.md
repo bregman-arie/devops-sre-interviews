@@ -62,3 +62,14 @@ Choose a topic and level to start practicing mock interviews.
 The table currently lists 5 mocks. Additional advanced mock sets:
 
 - **Advanced Mock #6**: [Questions](interviews/gcp/advanced/mock_6_questions.md) | [Answers](interviews/gcp/advanced/mock_6_answers.md)
+
+---
+
+## 🌐 Networking
+
+| Level | Mock #1 | Mock #2 | Mock #3 | Mock #4 | Mock #5 |
+|---|---|---|---|---|---|
+| **Beginner** | [![Mock 1](images/interviews/networking/beginner/mock_1.png)](interviews/networking/beginner/mock_1_questions.md) | [![Mock 2](images/interviews/networking/beginner/mock_2.png)](interviews/networking/beginner/mock_2_questions.md) | [![Mock 3](images/interviews/networking/beginner/mock_3.png)](interviews/networking/beginner/mock_3_questions.md) | [![Mock 4](images/interviews/networking/beginner/mock_4.png)](interviews/networking/beginner/mock_4_questions.md) | [![Mock 5](images/interviews/networking/beginner/mock_5.png)](interviews/networking/beginner/mock_5_questions.md) |
+| **Intermediate** | [![Mock 1](images/interviews/networking/intermediate/mock_1.png)](interviews/networking/intermediate/mock_1_questions.md) | [![Mock 2](images/interviews/networking/intermediate/mock_2.png)](interviews/networking/intermediate/mock_2_questions.md) | [![Mock 3](images/interviews/networking/intermediate/mock_3.png)](interviews/networking/intermediate/mock_3_questions.md) | [![Mock 4](images/interviews/networking/intermediate/mock_4.png)](interviews/networking/intermediate/mock_4_questions.md) | [![Mock 5](images/interviews/networking/intermediate/mock_5.png)](interviews/networking/intermediate/mock_5_questions.md) |
+| **Advanced** | [![Mock 1](images/interviews/networking/advanced/mock_1.png)](interviews/networking/advanced/mock_1_questions.md) | [![Mock 2](images/interviews/networking/advanced/mock_2.png)](interviews/networking/advanced/mock_2_questions.md) | [![Mock 3](images/interviews/networking/advanced/mock_3.png)](interviews/networking/advanced/mock_3_questions.md) | [![Mock 4](images/interviews/networking/advanced/mock_4.png)](interviews/networking/advanced/mock_4_questions.md) | [![Mock 5](images/interviews/networking/advanced/mock_5.png)](interviews/networking/advanced/mock_5_questions.md) |
+| **Expert** | [![Mock 1](images/interviews/networking/expert/mock_1.png)](interviews/networking/expert/mock_1_questions.md) | [![Mock 2](images/interviews/networking/expert/mock_2.png)](interviews/networking/expert/mock_2_questions.md) | [![Mock 3](images/interviews/networking/expert/mock_3.png)](interviews/networking/expert/mock_3_questions.md) | [![Mock 4](images/interviews/networking/expert/mock_4.png)](interviews/networking/expert/mock_4_questions.md) | [![Mock 5](images/interviews/networking/expert/mock_5.png)](interviews/networking/expert/mock_5_questions.md) |
