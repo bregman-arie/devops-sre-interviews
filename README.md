@@ -73,3 +73,16 @@ The table currently lists 5 mocks. Additional advanced mock sets:
 | **Intermediate** | [![Mock 1](images/interviews/networking/intermediate/mock_1.png)](interviews/networking/intermediate/mock_1_questions.md) | [![Mock 2](images/interviews/networking/intermediate/mock_2.png)](interviews/networking/intermediate/mock_2_questions.md) | [![Mock 3](images/interviews/networking/intermediate/mock_3.png)](interviews/networking/intermediate/mock_3_questions.md) | [![Mock 4](images/interviews/networking/intermediate/mock_4.png)](interviews/networking/intermediate/mock_4_questions.md) | [![Mock 5](images/interviews/networking/intermediate/mock_5.png)](interviews/networking/intermediate/mock_5_questions.md) |
 | **Advanced** | [![Mock 1](images/interviews/networking/advanced/mock_1.png)](interviews/networking/advanced/mock_1_questions.md) | [![Mock 2](images/interviews/networking/advanced/mock_2.png)](interviews/networking/advanced/mock_2_questions.md) | [![Mock 3](images/interviews/networking/advanced/mock_3.png)](interviews/networking/advanced/mock_3_questions.md) | [![Mock 4](images/interviews/networking/advanced/mock_4.png)](interviews/networking/advanced/mock_4_questions.md) | [![Mock 5](images/interviews/networking/advanced/mock_5.png)](interviews/networking/advanced/mock_5_questions.md) |
 | **Expert** | [![Mock 1](images/interviews/networking/expert/mock_1.png)](interviews/networking/expert/mock_1_questions.md) | [![Mock 2](images/interviews/networking/expert/mock_2.png)](interviews/networking/expert/mock_2_questions.md) | [![Mock 3](images/interviews/networking/expert/mock_3.png)](interviews/networking/expert/mock_3_questions.md) | [![Mock 4](images/interviews/networking/expert/mock_4.png)](interviews/networking/expert/mock_4_questions.md) | [![Mock 5](images/interviews/networking/expert/mock_5.png)](interviews/networking/expert/mock_5_questions.md) |
+
+---
+
+## 📈 Monitoring & Observability
+
+| Level | Mock #1 | Mock #2 | Mock #3 | Mock #4 | Mock #5 |
+|---|---|---|---|---|---|
+| **Beginner** | [![Mock 1](images/interviews/monitoring/beginner/mock_1.png)](interviews/monitoring/beginner/mock_1_questions.md) | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* |
+| **Intermediate** | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* |
+| **Advanced** | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* |
+| **Expert** | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* | *(Coming soon)* |
+
+> Focus areas will include: metrics pipeline design, high-cardinality strategies, distributed tracing sampling, log aggregation at scale, SLO modeling, alert fatigue reduction, telemetry cost optimization, and proactive anomaly detection.
