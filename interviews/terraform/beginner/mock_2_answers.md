@@ -1165,10 +1165,57 @@ terraform import aws_instance.web i-1234567890abcdef0
 
 ---
 
+### 20. How can you save a Terraform plan to a file and apply it later? What are the benefits of this approach?
+
+**Answer:**
+
+You can save a Terraform plan to a file using the `-out` flag and apply it later using the plan file:
+
+**Saving a plan:**
+```bash
+terraform plan -out=planfile.tfplan
+```
+
+**Applying the saved plan:**
+```bash
+terraform apply planfile.tfplan
+```
+
+**Benefits of this approach:**
+
+1. **CI/CD approval workflows:** Separate planning from execution phases for security reviews
+2. **Deterministic deployments:** Ensures exactly what was reviewed gets deployed
+3. **Team collaboration:** Share plans for review before execution  
+4. **Audit trail:** Document what changes will be made
+5. **Risk reduction:** Prevents drift between plan and apply phases
+6. **Automation-friendly:** Perfect for automated pipelines where human approval is needed
+
+**Common workflow example:**
+```bash
+# Step 1: Create and save plan
+terraform plan -out=production.tfplan
+
+# Step 2: Review the plan file (manual approval step)
+terraform show production.tfplan
+
+# Step 3: Apply the exact plan (no surprises)
+terraform apply production.tfplan
+```
+
+**Important notes:**
+- Plan files are binary and environment-specific
+- Should not be stored in version control
+- Have expiration considerations for long approval workflows
+- Contain sensitive data - handle securely
+
+This approach is especially useful for CI/CD approval workflows or ensuring deterministic deployments where you need to guarantee that what gets reviewed is exactly what gets deployed.
+
+---
+
 **Return to:** [Questions](mock_2_questions.md)
 
 **Related:** [Mock Interview #1](mock_1_questions.md) | [Intermediate Level](../intermediate/)
 
 **Level:** Beginner  
-**Total Questions:** 19  
-**Estimated Time:** 35 minutes
+**Total Questions:** 20  
+**Estimated Time:** 40 minutes

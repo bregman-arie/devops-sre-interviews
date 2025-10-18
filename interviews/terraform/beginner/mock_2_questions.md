@@ -47,6 +47,7 @@
 17. You need to create an AWS S3 bucket. Write a basic Terraform configuration. [📖 Answer](mock_2_answers.md#17-you-need-to-create-an-aws-s3-bucket-write-a-basic-terraform-configuration)
 18. How would you create multiple similar resources (e.g., 3 EC2 instances)? [📖 Answer](mock_2_answers.md#18-how-would-you-create-multiple-similar-resources-eg-3-ec2-instances)
 19. Your `terraform apply` failed. What steps would you take to troubleshoot? [📖 Answer](mock_2_answers.md#19-your-terraform-apply-failed-what-steps-would-you-take-to-troubleshoot)
+20. How can you save a Terraform plan to a file and apply it later? What are the benefits of this approach? [📖 Answer](mock_2_answers.md#20-how-can-you-save-a-terraform-plan-to-a-file-and-apply-it-later-what-are-the-benefits-of-this-approach)
 
 ---
 
