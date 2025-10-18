@@ -30,22 +30,23 @@
 10. Where is the Terraform state stored by default, and what are the alternatives? [📖 Answer](mock_2_answers.md#10-where-is-the-terraform-state-stored-by-default-and-what-are-the-alternatives)
 11. What happens if you accidentally delete the state file? [📖 Answer](mock_2_answers.md#11-what-happens-if-you-accidentally-delete-the-state-file)
 12. What is **state locking** and why do you need it? [📖 Answer](mock_2_answers.md#12-what-is-state-locking-and-why-do-you-need-it)
+13. What's the purpose of `.terraform.lock.hcl` file and should it be committed to version control? [📖 Answer](mock_2_answers.md#13-whats-the-purpose-of-terraformlockhcl-file-and-should-it-be-committed-to-version-control)
 
 ---
 
 ## 🔄 Section 4: Variables and Outputs
 
-13. How do you define and use **variables** in Terraform? [📖 Answer](mock_2_answers.md#13-how-do-you-define-and-use-variables-in-terraform)
-14. What are the different ways to assign values to Terraform variables? [📖 Answer](mock_2_answers.md#14-what-are-the-different-ways-to-assign-values-to-terraform-variables)
-15. What are **outputs** in Terraform and when would you use them? [📖 Answer](mock_2_answers.md#15-what-are-outputs-in-terraform-and-when-would-you-use-them)
+14. How do you define and use **variables** in Terraform? [📖 Answer](mock_2_answers.md#14-how-do-you-define-and-use-variables-in-terraform)
+15. What are the different ways to assign values to Terraform variables? [📖 Answer](mock_2_answers.md#15-what-are-the-different-ways-to-assign-values-to-terraform-variables)
+16. What are **outputs** in Terraform and when would you use them? [📖 Answer](mock_2_answers.md#16-what-are-outputs-in-terraform-and-when-would-you-use-them)
 
 ---
 
 ## 🏗️ Section 5: Practical Scenarios
 
-16. You need to create an AWS S3 bucket. Write a basic Terraform configuration. [📖 Answer](mock_2_answers.md#16-you-need-to-create-an-aws-s3-bucket-write-a-basic-terraform-configuration)
-17. How would you create multiple similar resources (e.g., 3 EC2 instances)? [📖 Answer](mock_2_answers.md#17-how-would-you-create-multiple-similar-resources-eg-3-ec2-instances)
-18. Your `terraform apply` failed. What steps would you take to troubleshoot? [📖 Answer](mock_2_answers.md#18-your-terraform-apply-failed-what-steps-would-you-take-to-troubleshoot)
+17. You need to create an AWS S3 bucket. Write a basic Terraform configuration. [📖 Answer](mock_2_answers.md#17-you-need-to-create-an-aws-s3-bucket-write-a-basic-terraform-configuration)
+18. How would you create multiple similar resources (e.g., 3 EC2 instances)? [📖 Answer](mock_2_answers.md#18-how-would-you-create-multiple-similar-resources-eg-3-ec2-instances)
+19. Your `terraform apply` failed. What steps would you take to troubleshoot? [📖 Answer](mock_2_answers.md#19-your-terraform-apply-failed-what-steps-would-you-take-to-troubleshoot)
 
 ---
 
